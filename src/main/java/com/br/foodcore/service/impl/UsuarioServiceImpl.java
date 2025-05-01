@@ -7,7 +7,6 @@ import com.br.foodcore.model.entity.usuario.Perfil;
 import com.br.foodcore.model.entity.usuario.Usuario;
 import com.br.foodcore.repository.UsuarioRepository;
 import com.br.foodcore.service.UsuarioService;
-import com.br.foodcore.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,15 +36,15 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     public Page<UsuarioResponseDTO> consultaUsuarios(Pageable pageable, UsuarioFiltroDTO filtro) {
         return repository.buscarUsuarios(pageable,
                 filtro.nome(),
-                StringUtils.removeAcentos(filtro.email()),
-                StringUtils.removeAcentos(filtro.login()),
-                StringUtils.removeAcentos(filtro.logradouro()),
-                StringUtils.removeAcentos(filtro.numero()),
-                StringUtils.removeAcentos(filtro.complemento()),
-                StringUtils.removeAcentos(filtro.bairro()),
-                StringUtils.removeAcentos(filtro.cidade()),
-                StringUtils.removeAcentos(filtro.estado()),
-                StringUtils.removeAcentos(filtro.cep()),
+                filtro.email(),
+                filtro.login(),
+                filtro.logradouro(),
+                filtro.numero(),
+                filtro.complemento(),
+                filtro.bairro(),
+                filtro.cidade(),
+                filtro.estado(),
+                filtro.cep(),
                 filtro.perfil()).map(this::toUsuarioDto);
     }
 

@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   oracle-db:
@@ -7,18 +7,22 @@ services:
     ports:
       - "1521:1521"
     environment:
-      ORACLE_PASSWORD: system
-      APP_USER: FoodCore
-      APP_USER_PASSWORD: FoodCore123
+      ORACLE_PASSWORD: oracle
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    networks:
+      - foodcore-network
     healthcheck:
-      test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/system@localhost/XE"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/oracle@localhost:1521/XE"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
-  foodcore-app:
-    image: foodcore-foodcore-app:latest
-    build: .
+  foodcore:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: foodcore
     depends_on:
       oracle-db:
@@ -26,7 +30,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@localhost:1521/XE
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/XE
       SPRING_DATASOURCE_USERNAME: system
-      SPRING_DATASOURCE_PASSWORD: system
-      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_DATASOURCE_PASSWORD: oracle
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - foodcore-network
+
+networks:
+  foodcore-network:
+    driver: bridge
+
+volumes:
+  oracle-data:
