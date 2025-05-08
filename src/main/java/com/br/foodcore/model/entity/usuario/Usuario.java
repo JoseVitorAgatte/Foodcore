@@ -1,5 +1,6 @@
 package com.br.foodcore.model.entity.usuario;
 
+import com.br.foodcore.infra.exception.NegocioException;
 import com.br.foodcore.model.dto.TrocaSenhaRequestDTO;
 import com.br.foodcore.model.dto.UsuarioRequestDTO;
 import com.br.foodcore.model.entity.endereco.Endereco;
@@ -82,6 +83,10 @@ public class Usuario implements UserDetails {
     }
 
     public void trocaSenha(TrocaSenhaRequestDTO dto, PasswordEncoder passwordEncoder) {
+
+        if(!dto.novaSenha().equals(dto.confirmaNovaSenha())){
+            throw new NegocioException("Senha e confirmação de senha devem ser iguais.");
+        }
         this.senha = passwordEncoder.encode(dto.novaSenha());
         this.dataUltimaAlteracao = LocalDateTime.now();
     }

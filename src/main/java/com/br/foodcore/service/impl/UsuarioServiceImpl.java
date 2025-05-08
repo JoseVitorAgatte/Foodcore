@@ -116,13 +116,13 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     private void verificaEmailDisponivel(String email) {
-        if (repository.existsByEmail(email)) {
+        if (repository.existsByEmailIgnoreCase(email)) {
             throw new NegocioException("E-mail já em uso.");
         }
     }
 
     private void verificaLoginDisponivel(String login) {
-        if (repository.existsByLogin(login)) {
+        if (repository.existsByLoginIgnoreCase(login)) {
             throw new NegocioException("Nome de Usuário já em uso.");
         }
     }
